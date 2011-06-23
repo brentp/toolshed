@@ -23,6 +23,8 @@ class shedskinner(object):
 
     If either the function or the decorator is changed, a new module
     will be recreated.
+
+    Parts of this were written by: https://gist.github.com/fahhem
     """
     kwlookup = {
             'nobounds': 'bounds_checking',
