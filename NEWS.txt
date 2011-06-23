@@ -1,0 +1,10 @@
+News
+====
+
+0.1
+---
+
+*Release date: 15-Mar-2010*
+
+* Initial project structure.
+
