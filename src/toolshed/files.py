@@ -4,6 +4,7 @@
 import sys
 import gzip
 import bz2
+from itertools import izip
 
 
 def nopen(f, mode="rb"):
@@ -59,7 +60,7 @@ def reader(fname, header=True, sep="\t"):
 
     if header:
         for toks in line_gen:
-            yield dict(zip(header, toks))
+            yield dict(izip(header, toks))
     else:
         for toks in line_gen:
             yield toks
