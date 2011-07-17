@@ -1,4 +1,4 @@
-from files import reader, tokens, nopen
+from files import reader, tokens, nopen, header
 import sys
 
 try:
@@ -10,6 +10,7 @@ except ImportError:
 def main():
     #import argparse
     #p = argparse.ArgumentParser(__doc__)
+    print "main"
     pass
 
 

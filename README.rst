@@ -10,7 +10,7 @@ Files
 If all you have is a file with a header and you want to get a dictionary
 for each row::
 
-    >>> from toolshed import reader
+    >>> from toolshed import reader, header
     >>> for d in reader('src/toolshed/tests/data/file_data.txt'):
     ...    print d['a'], d['b'], d['c']
     1 2 3
@@ -23,6 +23,11 @@ works the same for gzipped and bzipped files and for stdin (via "-")::
     ...    print drow['a'], drow['b'], drow['c']
     11 12 13
     21 22 23
+
+sometimes you just want the header::
+
+   >>> header('src/toolshed/tests/data/file_data.txt')
+   ['a', 'b', 'c']
 
 Shedskinner
 -----------

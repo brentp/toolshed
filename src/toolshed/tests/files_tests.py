@@ -1,4 +1,4 @@
-from toolshed.files import tokens, nopen, reader
+from toolshed.files import tokens, nopen, reader, header
 import os.path as op
 import glob
 
@@ -12,11 +12,20 @@ def test_tokens():
 
 def test_nopen():
     lines = open(op.join(DATA, "file_data.txt")).readlines()
-    line_iter = open(op.join(DATA, "file_data.txt"))
-    for f in glob.glob(op.join(DATA, "*")) + [lines, line_iter]:
+    for f in glob.glob(op.join(DATA, "*")) + [lines]:
         yield check_nopen, f
         yield check_reader, f
         yield check_reader_no_header, f
+        yield check_header, f
+    line_iter = open(op.join(DATA, "file_data.txt"))
+
+    for fn in (check_nopen, check_reader, check_reader_no_header,
+            check_header):
+        line_iter.seek(0)
+        yield fn, line_iter
+
+def check_header(fname):
+    assert isinstance(header(fname), list)
 
 def check_nopen(fname):
     d = nopen(fname)

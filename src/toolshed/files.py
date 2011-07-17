@@ -36,6 +36,14 @@ def tokens(line, sep="\t"):
     """
     return line.rstrip("\r\n").split(sep)
 
+def header(fname, sep="\t"):
+    """
+    just grab the header from a given file
+    """
+    fh = iter(nopen(fname))
+    h = tokens(fh.next(), sep)
+    return h
+
 
 def reader(fname, header=True, sep="\t"):
     r"""
