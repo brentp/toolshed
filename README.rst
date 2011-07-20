@@ -7,6 +7,9 @@ that I use frequently
 Files
 -----
 
+If you have a "proper" CSV file with quoting and such, use python's `csv`_
+module.
+
 If all you have is a file with a header and you want to get a dictionary
 for each row::
 
@@ -52,10 +55,4 @@ https://gist.github.com/1036972) for more examples.
 Links
 -----
 
-- `Distribute`_
-- `Buildout`_
-- `modern-package-template`_
-
-.. _Buildout: http://www.buildout.org/
-.. _Distribute: http://pypi.python.org/pypi/distribute
-.. _`modern-package-template`: http://pypi.python.org/pypi/modern-package-template
+.. _`csv`: http://docs.python.org/library/csv.html
