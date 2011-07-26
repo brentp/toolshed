@@ -1,10 +1,14 @@
 News
 ====
 
+0.1.3
+-----
+* July 26 2011
+* Allow ftp/http(s) paths as arguments to reader
+
 0.1.1
 -----
-
- * use itertools.izip for speed improvement
+* use itertools.izip for speed improvement
 
 0.1
 ---

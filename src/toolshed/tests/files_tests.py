@@ -12,7 +12,8 @@ def test_tokens():
 
 def test_nopen():
     lines = open(op.join(DATA, "file_data.txt")).readlines()
-    for f in glob.glob(op.join(DATA, "*")) + [lines]:
+    for f in glob.glob(op.join(DATA, "*")) + [lines,
+        "http://www.stanford.edu/class/stats191/data/salary.table"]:
         yield check_nopen, f
         yield check_reader, f
         yield check_reader_no_header, f
@@ -32,9 +33,13 @@ def check_nopen(fname):
     assert hasattr(d, "__iter__")
 
 def check_reader(fname):
-    for d in reader(fname):
-        assert all((k in d for k in "abc"))
-        assert d['a']
+    if not "http:" in fname:
+        for d in reader(fname):
+            assert all((k in d for k in "abc"))
+            assert d['a']
+    else:
+        for d in reader(fname):
+            assert all((k in d for k in "SXEM"))
 
 def check_reader_no_header(fname):
     for l in reader(fname, header=False):

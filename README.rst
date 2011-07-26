@@ -20,7 +20,8 @@ for each row::
     11 12 13
     21 22 23
 
-works the same for gzipped and bzipped files and for stdin (via "-")::
+works the same for gzipped and bzipped files and for stdin (via "-")
+and for files over http/ftp::
 
     >>> for drow in (d for d in reader('src/toolshed/tests/data/file_data.txt.gz') if int(d['a']) > 10):
     ...    print drow['a'], drow['b'], drow['c']
