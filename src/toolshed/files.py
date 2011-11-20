@@ -5,6 +5,7 @@ import sys
 import gzip
 import bz2
 from itertools import izip
+from subprocess import Popen, PIPE
 import urllib
 
 
@@ -21,16 +22,24 @@ def nopen(f, mode="rb"):
     # an already open file.
     >>> nopen(open(sys.argv[0]))
     <open file '...', mode 'r...>
+
+    Or provide nicer access to Popen.stdout
+    >>> files = nopen("|ls").read()
+    >>> assert 'setup.py' in files
     """
     if not isinstance(f, basestring):
         return f
+    if f.startswith("|"):
+        p = Popen(f[1:], stdout=PIPE, stdin=PIPE, shell=True)
+        if mode[0] == "r": return p.stdout
+        # if it is writable, just return the object.
+        return p
     return {"r": sys.stdin, "w": sys.stdout}[mode[0]] if f == "-" \
          else gzip.open(f, mode) if f.endswith((".gz", ".Z", ".z")) \
          else bz2.BZ2File(f, mode) if f.endswith((".bz", ".bz2", ".bzip2")) \
          else urllib.urlopen(f) if f.startswith(("http://", "https://",
              "ftp://")) \
         else open(f, mode)
-
 
 def tokens(line, sep="\t"):
     r"""
@@ -46,7 +55,6 @@ def header(fname, sep="\t"):
     fh = iter(nopen(fname))
     h = tokens(fh.next(), sep)
     return h
-
 
 def reader(fname, header=True, sep="\t"):
     r"""

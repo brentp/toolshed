@@ -13,7 +13,7 @@ module.
 If all you have is a file with a header and you want to get a dictionary
 for each row::
 
-    >>> from toolshed import reader, header
+    >>> from toolshed import reader, header, nopen
     >>> for d in reader('src/toolshed/tests/data/file_data.txt'):
     ...    print d['a'], d['b'], d['c']
     1 2 3
@@ -32,6 +32,14 @@ sometimes you just want the header::
 
    >>> header('src/toolshed/tests/data/file_data.txt')
    ['a', 'b', 'c']
+
+the `toolshed.nopen` can open a file over http, https, ftp, a gzipped file, a
+bzip file, or a subprocess with the same syntax.
+
+    >>> nopen('src/toolshed/tests/data/file_data.txt.gz')
+    <gzip open file ... >
+    >>> nopen('|ls')
+    <open file '<fdopen>'...>
 
 Shedskinner
 -----------
