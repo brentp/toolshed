@@ -54,6 +54,7 @@ def header(fname, sep="\t"):
     """
     fh = iter(nopen(fname))
     h = tokens(fh.next(), sep)
+    h[0] = h[0].lstrip("#")
     return h
 
 def reader(fname, header=True, sep="\t"):
