@@ -7,7 +7,9 @@ import bz2
 from itertools import izip
 from subprocess import Popen, PIPE
 import urllib
+import csv
 
+dialect = csv.excel
 
 def nopen(f, mode="rb"):
     """
@@ -30,8 +32,8 @@ def nopen(f, mode="rb"):
     if not isinstance(f, basestring):
         return f
     if f.startswith("|"):
-        p = Popen(f[1:], stdout=PIPE, stdin=PIPE, shell=True)
-        if mode[0] == "r": return p.stdout
+        p = Popen(f[1:], stdout=PIPE, stdin=PIPE, stderr=PIPE, shell=True)
+        if mode and mode[0] == "r": return p.stdout
         # if it is writable, just return the object.
         return p
     return {"r": sys.stdin, "w": sys.stdout}[mode[0]] if f == "-" \
@@ -73,10 +75,16 @@ def reader(fname, header=True, sep="\t"):
     >>> list(reader(get_str(), header=False))
     [['a', 'b', 'name'], ['1', '2', 'fred'], ['11', '22', 'jane']]
     """
-    line_gen = (l.rstrip("\r\n").split(sep) for l in nopen(fname))
+    if not isinstance(fname, basestring):
+        line_gen = (l.rstrip("\r\n").split(sep) for l in nopen(fname))
+    else:
+        dialect = csv.excel
+        dialect.delimiter = sep
+        line_gen = csv.reader(nopen(fname), dialect=dialect)
     if header == True:
         header = line_gen.next()
         header[0] = header[0].lstrip("#")
+
 
     if header:
         for toks in line_gen:
