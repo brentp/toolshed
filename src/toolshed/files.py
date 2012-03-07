@@ -8,6 +8,7 @@ from itertools import izip
 from subprocess import Popen, PIPE
 import urllib
 import csv
+import os.path as op
 
 dialect = csv.excel
 
@@ -20,6 +21,10 @@ def nopen(f, mode="rb"):
 
     >>> nopen(sys.argv[0])
     <open file '...', mode 'r...>
+
+    # expands user and vars ($HOME)
+    >>> nopen("~/.bashrc"), nopen("$HOME/.bashrc")
+    (<open file '...', mode 'r...>, <open file '...', mode 'r...>)
 
     # an already open file.
     >>> nopen(open(sys.argv[0]))
@@ -41,7 +46,7 @@ def nopen(f, mode="rb"):
          else bz2.BZ2File(f, mode) if f.endswith((".bz", ".bz2", ".bzip2")) \
          else urllib.urlopen(f) if f.startswith(("http://", "https://",
              "ftp://")) \
-        else open(f, mode)
+         else open(op.expanduser(op.expandvars(f)), mode)
 
 def tokens(line, sep="\t"):
     r"""
