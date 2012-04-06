@@ -2,13 +2,14 @@
     %prog [options] files
 """
 import sys
+import os.path as op
+from itertools import izip
+import urllib
+
 import gzip
 import bz2
-from itertools import izip
 from subprocess import Popen, PIPE
-import urllib
 import csv
-import os.path as op
 
 dialect = csv.excel
 
@@ -55,6 +56,7 @@ def tokens(line, sep="\t"):
     """
     return line.rstrip("\r\n").split(sep)
 
+
 def header(fname, sep="\t"):
     """
     just grab the header from a given file
@@ -100,6 +102,5 @@ def reader(fname, header=True, sep="\t"):
 
 if __name__ == "__main__":
     import doctest
-    if doctest.testmod(optionflags=doctest.ELLIPSIS |\
-                                   doctest.NORMALIZE_WHITESPACE).failed == 0:
-        pass
+    doctest.testmod(optionflags=doctest.ELLIPSIS |\
+                                   doctest.NORMALIZE_WHITESPACE)
