@@ -1,4 +1,4 @@
-from files import reader, tokens, nopen, header
+from files import reader, tokens, nopen, header, is_newer_b
 import sys
 
 try:
