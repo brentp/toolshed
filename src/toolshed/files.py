@@ -2,6 +2,7 @@
     %prog [options] files
 """
 import sys
+import os
 import os.path as op
 from itertools import izip
 import urllib
@@ -99,6 +100,25 @@ def reader(fname, header=True, sep="\t"):
     else:
         for toks in line_gen:
             yield toks
+
+def is_newer_b(a, bfiles):
+    """
+    check that all b files have been modified more recently than a
+    """
+    if isinstance(bfiles, basestring):
+        bfiles = [bfiles]
+
+    if not op.exists(a): return False
+    if not all(op.exists(b) for b in bfiles): return False
+
+    atime = os.stat(a).st_mtime # modification time
+    for b in bfiles:
+        # a has been modified since
+        if atime > os.stat(b).st_mtime: 
+            return False
+    return True
+
+
 
 if __name__ == "__main__":
     import doctest

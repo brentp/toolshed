@@ -1,6 +1,11 @@
 News
 ====
 
+0.1.8
+-----
+* Add is_newer_b(apath, bpaths) to check that all b files are newer
+  than apath.
+
 0.1.3
 -----
 * July 26 2011

@@ -1,6 +1,8 @@
-from toolshed.files import tokens, nopen, reader, header
+from toolshed.files import tokens, nopen, reader, header, is_newer_b
 import os.path as op
+import os
 import glob
+import time
 
 DATA = op.join(op.dirname(__file__), "data")
 
@@ -9,6 +11,17 @@ def test_tokens():
     assert tokens(t, sep=",") == t.split(",")
     t = t.replace(",", "\t")
     assert tokens(t) == t.split("\t")
+
+def test_is_newer():
+
+    open('tt.tmp', 'w').close()
+    time.sleep(0.5)
+    open('uu.tmp', 'w').close()
+    assert not is_newer_b('uu.tmp', 'tt.tmp')
+    time.sleep(0.5)
+    open('tt.tmp', 'w').close()
+    os.unlink('tt.tmp')
+    os.unlink('uu.tmp')
 
 def test_nopen():
     lines = open(op.join(DATA, "file_data.txt")).readlines()
