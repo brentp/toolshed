@@ -6,6 +6,7 @@ import os
 import os.path as op
 from itertools import izip
 import urllib
+from collections import OrderedDict
 
 import gzip
 import bz2
@@ -89,6 +90,13 @@ def reader(fname, header=True, sep="\t"):
         dialect = csv.excel
         dialect.delimiter = sep
         line_gen = csv.reader(nopen(fname), dialect=dialect)
+
+    a_dict = dict
+    # if header is 'ordered', then use an ordered dictionary.
+    if header == "ordered":
+        a_dict = OrderedDict
+        header = True
+
     if header == True:
         header = line_gen.next()
         header[0] = header[0].lstrip("#")
@@ -96,7 +104,7 @@ def reader(fname, header=True, sep="\t"):
 
     if header:
         for toks in line_gen:
-            yield dict(izip(header, toks))
+            yield a_dict(izip(header, toks))
     else:
         for toks in line_gen:
             yield toks

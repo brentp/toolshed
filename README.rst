@@ -28,6 +28,10 @@ and for files over http/ftp::
     11 12 13
     21 22 23
 
+if one can specify the header to a file without one using the `header=` kwarg.
+If `header` is "ordered" then an OrderedDictionary will be used so that
+drow.keys() and d.values() will return the values in the order they appeared in the file.
+
 sometimes you just want the header::
 
    >>> header('src/toolshed/tests/data/file_data.txt')

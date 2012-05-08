@@ -1,6 +1,12 @@
 News
 ====
 
+0.1.9
+-----
+* if the header argument to `reader` is "ordered" then an ordered
+  dictionary is used.
+
+
 0.1.8
 -----
 * Add is_newer_b(apath, bpaths) to check that all b files are newer

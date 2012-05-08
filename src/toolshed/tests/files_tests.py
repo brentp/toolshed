@@ -29,6 +29,7 @@ def test_nopen():
         "http://www.stanford.edu/class/stats191/data/salary.table"]:
         yield check_nopen, f
         yield check_reader, f
+        yield check_ordered_reader, f
         yield check_reader_no_header, f
         yield check_header, f
     line_iter = open(op.join(DATA, "file_data.txt"))
@@ -53,6 +54,14 @@ def check_reader(fname):
     else:
         for d in reader(fname):
             assert all((k in d for k in "SXEM"))
+
+def check_ordered_reader(fname):
+    if not "http:" in fname:
+        for d in reader(fname, header="ordered"):
+            assert all((k in d for k in "abc"))
+            d["0"] = "extra"
+            d["_"] = "other"
+            assert d.keys() == ["a", "b", "c", "0", "_"]
 
 def check_reader_no_header(fname):
     for l in reader(fname, header=False):
