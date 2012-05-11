@@ -1,5 +1,8 @@
 News
 ====
+0.2.0
+-----
+* better error message from Popen when using nopen("| something")
 
 0.1.9
 -----

@@ -15,6 +15,8 @@ import csv
 
 dialect = csv.excel
 
+class ProcessException(Exception): pass
+
 def nopen(f, mode="rb"):
     """
     open a file that's gzipped or return stdin for '-'
@@ -41,7 +43,14 @@ def nopen(f, mode="rb"):
         return f
     if f.startswith("|"):
         p = Popen(f[1:], stdout=PIPE, stdin=PIPE, stderr=PIPE, shell=True)
-        if mode and mode[0] == "r": return p.stdout
+        if mode and mode[0] == "r":
+            try:
+                return p.stdout
+            finally:
+                #p.wait()
+                err = p.stderr.read()
+                if len(err) or p.returncode not in (0, None):
+                    raise ProcessException(err)
         # if it is writable, just return the object.
         return p
     return {"r": sys.stdin, "w": sys.stdout}[mode[0]] if f == "-" \
