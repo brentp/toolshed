@@ -1,4 +1,5 @@
-from toolshed.files import tokens, nopen, reader, header, is_newer_b
+from toolshed.files import tokens, nopen, reader, header, is_newer_b,\
+                            ProcessException
 import os.path as op
 import os
 import glob
@@ -22,6 +23,12 @@ def test_is_newer():
     open('tt.tmp', 'w').close()
     os.unlink('tt.tmp')
     os.unlink('uu.tmp')
+
+from nose.tools import raises
+
+@raises(ProcessException)
+def test_nopen_raises():
+    nopen("|asdfasdfasdfasdfasdf").next()
 
 def test_nopen():
     lines = open(op.join(DATA, "file_data.txt")).readlines()

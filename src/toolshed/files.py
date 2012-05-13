@@ -6,7 +6,6 @@ import os
 import os.path as op
 from itertools import izip
 import urllib
-from collections import OrderedDict
 
 import gzip
 import bz2
@@ -16,6 +15,21 @@ import csv
 dialect = csv.excel
 
 class ProcessException(Exception): pass
+
+def process_iter(proc):
+    """
+    helper function to iterate over a process stdout
+    and report error messages when done
+    """
+    try:
+        for l in proc.stdout:
+            yield l
+    finally:
+        proc.wait()
+        err = proc.stderr.read()
+        if len(err) or proc.returncode not in (0, None):
+            raise ProcessException(err)
+
 
 def nopen(f, mode="rb"):
     """
@@ -44,14 +58,7 @@ def nopen(f, mode="rb"):
     if f.startswith("|"):
         p = Popen(f[1:], stdout=PIPE, stdin=PIPE, stderr=PIPE, shell=True)
         if mode and mode[0] == "r":
-            try:
-                return p.stdout
-            finally:
-                #p.wait()
-                err = p.stderr.read()
-                if len(err) or p.returncode not in (0, None):
-                    raise ProcessException(err)
-        # if it is writable, just return the object.
+            return process_iter(p)
         return p
     return {"r": sys.stdin, "w": sys.stdout}[mode[0]] if f == "-" \
          else gzip.open(f, mode) if f.endswith((".gz", ".Z", ".z")) \
@@ -103,6 +110,7 @@ def reader(fname, header=True, sep="\t"):
     a_dict = dict
     # if header is 'ordered', then use an ordered dictionary.
     if header == "ordered":
+        from collections import OrderedDict
         a_dict = OrderedDict
         header = True
 
