@@ -25,10 +25,14 @@ def process_iter(proc):
         for l in proc.stdout:
             yield l
     finally:
-        proc.wait()
-        err = proc.stderr.read()
-        if len(err) or proc.returncode not in (0, None):
-            raise ProcessException(err)
+        if proc.poll() is None:
+            # there was an exception
+            return
+        else:
+            proc.wait()
+            err = proc.stderr.read()
+            if err or proc.returncode not in (0, None):
+                raise ProcessException(err)
 
 
 def nopen(f, mode="rb"):
