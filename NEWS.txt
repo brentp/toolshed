@@ -1,5 +1,9 @@
 News
 ====
+0.2.2
+-----
+* if an integer is sent to nopen, then nopen(sys.argv[arg]) is returned.
+
 0.2.1
 -----
 * fix handling when there's an exception in the loop that calls a process

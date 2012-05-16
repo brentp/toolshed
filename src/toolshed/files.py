@@ -36,8 +36,9 @@ def process_iter(proc):
 
 
 def nopen(f, mode="rb"):
-    """
+    r"""
     open a file that's gzipped or return stdin for '-'
+    if f is a number, the result of nopen(sys.argv[f]) is returned.
 
     >>> nopen('-') == sys.stdin, nopen('-', 'w') == sys.stdout
     (True, True)
@@ -53,10 +54,16 @@ def nopen(f, mode="rb"):
     >>> nopen(open(sys.argv[0]))
     <open file '...', mode 'r...>
 
+    >>> nopen(0)
+    <open file '...', mode 'r...>
+
     Or provide nicer access to Popen.stdout
-    >>> files = nopen("|ls").read()
-    >>> assert 'setup.py' in files
+    >>> files = list(nopen("|ls"))
+    >>> assert 'setup.py\n' in files, files
     """
+    if isinstance(f, (int, long)):
+        return nopen(sys.argv[f], mode)
+
     if not isinstance(f, basestring):
         return f
     if f.startswith("|"):
