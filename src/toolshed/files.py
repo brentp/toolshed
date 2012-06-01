@@ -4,7 +4,10 @@
 import sys
 import os
 import os.path as op
-from itertools import izip
+try:
+    from itertools import izip
+except ImportError:
+    izip = zip
 import urllib
 
 import gzip
