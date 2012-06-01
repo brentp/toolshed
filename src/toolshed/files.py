@@ -8,6 +8,7 @@ try:
     from itertools import izip
 except ImportError:
     izip = zip
+import types
 import urllib
 
 import gzip
@@ -115,7 +116,12 @@ def reader(fname, header=True, sep="\t"):
     [['a', 'b', 'name'], ['1', '2', 'fred'], ['11', '22', 'jane']]
     """
     if not isinstance(fname, basestring):
-        line_gen = (l.rstrip("\r\n").split(sep) for l in nopen(fname))
+        # for example if they passed in the generator return from
+        # reader(..., header=False)
+        if isinstance(fname, types.GeneratorType):
+            line_gen = fname
+        else:
+            line_gen = (l.rstrip("\r\n").split(sep) for l in nopen(fname))
     else:
         dialect = csv.excel
         dialect.delimiter = sep

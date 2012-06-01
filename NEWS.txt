@@ -1,5 +1,9 @@
 News
 ====
+0.2.3
+-----
+* if reader can accept the generator returned from reader()
+
 0.2.2
 -----
 * if an integer is sent to nopen, then nopen(sys.argv[arg]) is returned.

@@ -30,9 +30,16 @@ from nose.tools import raises
 def test_nopen_raises():
     nopen("|asdfasdfasdfasdfasdf").next()
 
+def test_reader_generator():
+    """check that reader can accept a generator"""
+    r = reader(op.join(DATA, "file_data.txt"), header=False)
+    header = r.next()
+    for d in reader(r, header=header):
+        assert all(l in d for l in "abc")
+   
 def test_nopen():
     lines = open(op.join(DATA, "file_data.txt")).readlines()
-    for f in glob.glob(op.join(DATA, "*")) + [lines,
+    for f in glob.glob(op.join(DATA, "*")) + [lines,\
         "http://www.stanford.edu/class/stats191/data/salary.table"]:
         yield check_nopen, f
         yield check_reader, f
@@ -72,5 +79,5 @@ def check_ordered_reader(fname):
 
 def check_reader_no_header(fname):
     for l in reader(fname, header=False):
-        assert isinstance(l, list)
+        assert isinstance(l, list), (l, type(l), fname)
 
