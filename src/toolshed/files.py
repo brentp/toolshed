@@ -43,7 +43,6 @@ def process_iter(proc):
             if err or proc.returncode not in (0, None):
                 raise ProcessException(err)
 
-
 def nopen(f, mode="rb"):
     r"""
     open a file that's gzipped or return stdin for '-'
@@ -147,7 +146,6 @@ def reader(fname, header=True, sep="\t"):
         header = line_gen.next()
         header[0] = header[0].lstrip("#")
 
-
     if header:
         for toks in line_gen:
             yield a_dict(izip(header, toks))
@@ -168,11 +166,9 @@ def is_newer_b(a, bfiles):
     atime = os.stat(a).st_mtime # modification time
     for b in bfiles:
         # a has been modified since
-        if atime > os.stat(b).st_mtime: 
+        if atime > os.stat(b).st_mtime:
             return False
     return True
-
-
 
 if __name__ == "__main__":
     import doctest
