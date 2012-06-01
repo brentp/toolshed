@@ -30,13 +30,27 @@ from nose.tools import raises
 def test_nopen_raises():
     nopen("|asdfasdfasdfasdfasdf").next()
 
+def test_callable_header():
+
+    class Bed(object):
+        def __init__(self, toks):
+            self.chrom = toks[0]
+            self.start = int(toks[1])
+            self.end = int(toks[2])
+
+    fh = nopen(op.join(DATA, "file_data.txt"))
+    fh.readline() # drop header.
+    for bed in reader(fh, header=Bed):
+        assert bed.chrom
+        assert isinstance(bed.start, int)
+
 def test_reader_generator():
     """check that reader can accept a generator"""
     r = reader(op.join(DATA, "file_data.txt"), header=False)
     header = r.next()
     for d in reader(r, header=header):
         assert all(l in d for l in "abc")
-   
+
 def test_nopen():
     lines = open(op.join(DATA, "file_data.txt")).readlines()
     for f in glob.glob(op.join(DATA, "*")) + [lines,\

@@ -32,6 +32,11 @@ if one can specify the header to a file without one using the `header=` kwarg.
 If `header` is "ordered" then an OrderedDictionary will be used so that
 drow.keys() and d.values() will return the values in the order they appeared in the file.
 
+If `header` is a callable (a function or class) then, for each row, that
+callable will be called for each row with a single argument which is the
+list of columns in the future, it may be called as:  callable(\*row) instead
+of callable(row). **comments welcome**.
+
 sometimes you just want the header::
 
    >>> header('src/toolshed/tests/data/file_data.txt')

@@ -8,6 +8,11 @@ try:
     from itertools import izip
 except ImportError:
     izip = zip
+try:
+    callable
+except NameError:
+    callable = lambda a: hasattr(a, "__cal__")
+
 import types
 import urllib
 
@@ -115,19 +120,23 @@ def reader(fname, header=True, sep="\t"):
     >>> list(reader(get_str(), header=False))
     [['a', 'b', 'name'], ['1', '2', 'fred'], ['11', '22', 'jane']]
     """
-    if not isinstance(fname, basestring):
-        # for example if they passed in the generator return from
-        # reader(..., header=False)
-        if isinstance(fname, types.GeneratorType):
+    if not isinstance(fname, basestring) and \
+        isinstance(fname, types.GeneratorType):
             line_gen = fname
-        else:
-            line_gen = (l.rstrip("\r\n").split(sep) for l in nopen(fname))
     else:
         dialect = csv.excel
         dialect.delimiter = sep
         line_gen = csv.reader(nopen(fname), dialect=dialect)
 
     a_dict = dict
+
+    # they sent in a class or function that accepts the toks.
+    if callable(header):
+        for toks in line_gen:
+            yield header(toks)
+
+        raise StopIteration
+
     # if header is 'ordered', then use an ordered dictionary.
     if header == "ordered":
         from collections import OrderedDict

@@ -1,5 +1,10 @@
 News
 ====
+0.2.4
+-----
+* if header is a callable, it's called for each row (instead of returning
+  dict).
+
 0.2.3
 -----
 * if reader can accept the generator returned from reader()
