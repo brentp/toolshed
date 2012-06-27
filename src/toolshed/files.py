@@ -39,9 +39,9 @@ def process_iter(proc):
             return
         else:
             proc.wait()
-            err = proc.stderr.read()
-            if err or proc.returncode not in (0, None):
-                raise ProcessException(err)
+            if proc.returncode not in (0, None):
+                raise ProcessException(proc.stderr.read())
+            print >>sys.stderr, proc.stderr.read()
 
 def nopen(f, mode="rb"):
     r"""
