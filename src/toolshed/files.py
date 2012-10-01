@@ -11,7 +11,7 @@ except ImportError:
 try:
     callable
 except NameError:
-    callable = lambda a: hasattr(a, "__cal__")
+    callable = lambda a: hasattr(a, "__call__")
 
 import types
 import urllib
@@ -127,8 +127,6 @@ def reader(fname, header=True, sep="\t"):
         dialect.delimiter = sep
         line_gen = csv.reader(nopen(fname), dialect=dialect)
 
-    a_dict = dict
-
     # they sent in a class or function that accepts the toks.
     if callable(header):
         for toks in line_gen:
@@ -136,10 +134,10 @@ def reader(fname, header=True, sep="\t"):
 
         raise StopIteration
 
+    a_dict = dict
     # if header is 'ordered', then use an ordered dictionary.
     if header == "ordered":
-        from collections import OrderedDict
-        a_dict = OrderedDict
+        from collections import OrderedDict as a_dict
         header = True
 
     if header == True:
