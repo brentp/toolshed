@@ -13,6 +13,23 @@ def test_tokens():
     t = t.replace(",", "\t")
     assert tokens(t) == t.split("\t")
 
+
+def test_split_None():
+    fh = open('tt.tmp', 'w')
+    print >>fh, "asdf 123\tabc"
+    fh.close()
+    toks = reader('tt.tmp', header=None, sep=None).next()
+    assert toks == ['asdf', '123', 'abc'], toks
+    os.unlink('tt.tmp')
+
+def test_split_regex():
+    fh = open('tt.tmp', 'w')
+    print >>fh, "asdf123abc"
+    fh.close()
+    toks = reader('tt.tmp', header=None, sep="\d+").next()
+    assert toks == ['asdf', 'abc'], toks
+    os.unlink('tt.tmp')
+
 def test_is_newer():
 
     open('tt.tmp', 'w').close()

@@ -122,10 +122,25 @@ def reader(fname, header=True, sep="\t"):
     if not isinstance(fname, basestring) and \
         isinstance(fname, types.GeneratorType):
             line_gen = fname
+    elif sep is None:
+        import re
+        def _line_gen(f, sep):
+            if sep is None:
+                for line in nopen(f):
+                    yield line.rstrip("\r\n").split()
+        line_gen = _line_gen(fname, sep)
     else:
-        dialect = csv.excel
-        dialect.delimiter = sep
-        line_gen = csv.reader(nopen(fname), dialect=dialect)
+        try:
+            dialect = csv.excel
+            dialect.delimiter = sep
+            line_gen = csv.reader(nopen(fname), dialect=dialect)
+        except TypeError: # sep is None or a regex.
+            import re
+            sep = re.compile(sep)
+            def _re_line_gen(f, sep):
+                for line in nopen(f):
+                    yield sep.split(line.rstrip("\r\n"))
+            line_gen = _re_line_gen(fname, sep)
 
     # they sent in a class or function that accepts the toks.
     if callable(header):

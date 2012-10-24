@@ -1,5 +1,9 @@
 News
 ====
+0.2.5
+-----
+* allow splitting on none or on regexp.
+
 0.2.4
 -----
 * if header is a callable, it's called for each row (instead of returning
