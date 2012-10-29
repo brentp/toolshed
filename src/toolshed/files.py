@@ -25,7 +25,7 @@ dialect = csv.excel
 
 class ProcessException(Exception): pass
 
-def process_iter(proc):
+def process_iter(proc, cmd):
     """
     helper function to iterate over a process stdout
     and report error messages when done
@@ -40,6 +40,7 @@ def process_iter(proc):
         else:
             proc.wait()
             if proc.returncode not in (0, None):
+                print >>sys.stderr, "cmd was:", cmd
                 raise ProcessException(proc.stderr.read())
             print >>sys.stderr, proc.stderr.read()
 
@@ -77,7 +78,7 @@ def nopen(f, mode="rb"):
     if f.startswith("|"):
         p = Popen(f[1:], stdout=PIPE, stdin=PIPE, stderr=PIPE, shell=True)
         if mode and mode[0] == "r":
-            return process_iter(p)
+            return process_iter(p, f[1:])
         return p
     return {"r": sys.stdin, "w": sys.stdout}[mode[0]] if f == "-" \
          else gzip.open(f, mode) if f.endswith((".gz", ".Z", ".z")) \
