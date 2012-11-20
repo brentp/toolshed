@@ -1,5 +1,9 @@
 News
 ====
+0.2.6
+-----
+* don't print an extra newline when reading empty stderr from a process.
+
 0.2.5
 -----
 * allow splitting on none or on regexp.

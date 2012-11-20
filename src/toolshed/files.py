@@ -42,7 +42,9 @@ def process_iter(proc, cmd):
             if proc.returncode not in (0, None):
                 print >>sys.stderr, "cmd was:", cmd
                 raise ProcessException(proc.stderr.read())
-            print >>sys.stderr, proc.stderr.read()
+            s = proc.stderr.read().strip()
+            if len(s) != 0:
+                print >>sys.stderr, s
 
 def nopen(f, mode="rb"):
     r"""
