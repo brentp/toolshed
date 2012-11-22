@@ -106,6 +106,13 @@ def header(fname, sep="\t"):
     h[0] = h[0].lstrip("#")
     return h
 
+def xls_reader(f, sheet=0):
+    import xlrd
+    wb = xlrd.open_workbook(f, on_demand=True)
+    ws = wb.sheets()[sheet]
+    for irow in range(ws.nrows):
+        yield map(str, ws.row_values(irow))
+
 def reader(fname, header=True, sep="\t"):
     r"""
     for each row in the file `fname` generate dicts if `header` is True
@@ -122,6 +129,8 @@ def reader(fname, header=True, sep="\t"):
     >>> list(reader(get_str(), header=False))
     [['a', 'b', 'name'], ['1', '2', 'fred'], ['11', '22', 'jane']]
     """
+    if isinstance(fname, (int, long)):
+        fname = sys.argv[fname]
     if not isinstance(fname, basestring) and \
         isinstance(fname, types.GeneratorType):
             line_gen = fname
@@ -132,6 +141,8 @@ def reader(fname, header=True, sep="\t"):
                 for line in nopen(f):
                     yield line.rstrip("\r\n").split()
         line_gen = _line_gen(fname, sep)
+    elif isinstance(fname, basestring) and fname.endswith((".xls")):
+        line_gen = xls_reader(fname)
     else:
         try:
             dialect = csv.excel
