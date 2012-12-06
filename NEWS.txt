@@ -1,5 +1,9 @@
 News
 ====
+0.2.8
+-----
+reader supports remote .gz files.
+
 0.2.7
 -----
 * reader supports .xls files.

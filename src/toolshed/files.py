@@ -82,12 +82,33 @@ def nopen(f, mode="rb"):
         if mode and mode[0] == "r":
             return process_iter(p, f[1:])
         return p
+
+    if f.startswith(("http://", "https://", "ftp://")):
+        fh = urllib.urlopen(f)
+        if f.endswith(".gz"):
+            return ungzipper(fh)
+        return fh
     return {"r": sys.stdin, "w": sys.stdout}[mode[0]] if f == "-" \
          else gzip.open(f, mode) if f.endswith((".gz", ".Z", ".z")) \
          else bz2.BZ2File(f, mode) if f.endswith((".bz", ".bz2", ".bzip2")) \
-         else urllib.urlopen(f) if f.startswith(("http://", "https://",
-             "ftp://")) \
          else open(op.expanduser(op.expandvars(f)), mode)
+
+def ungzipper(fh, blocksize=16384):
+    """
+    work-around to get streaming download of http://.../some.gz
+    """
+    import zlib
+    uzip = zlib.decompressobj(16 + zlib.MAX_WBITS)
+    data = uzip.decompress(fh.read(blocksize)).split("\n")
+
+    while len(data[0]):
+        # last chunk might not be a full line.
+        save = data.pop()
+        for line in data:
+            yield line
+        data = uzip.decompress(fh.read(blocksize)).split("\n")
+        # first line is prepended with saved chunk from end of last set.
+        data[0] = save + data[0]
 
 def tokens(line, sep="\t"):
     r"""
