@@ -1,8 +1,12 @@
 News
 ====
+0.2.9
+-----
+support for bash process substition, e.g.: reader("|cmd <(some args)")
+
 0.2.8
 -----
-reader supports remote .gz files.
+reader supports streaming remote .gz files.
 
 0.2.7
 -----

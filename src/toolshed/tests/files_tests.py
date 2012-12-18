@@ -47,6 +47,10 @@ from nose.tools import raises
 def test_nopen_raises():
     nopen("|asdfasdfasdfasdfasdf").next()
 
+def test_process_subst():
+    assert not len([x for x in nopen("|cat <(less %s)") if x.strip()])
+    assert len([x for x in nopen("|cat <(less %s)" % __file__) if x.strip()])
+
 def test_callable_header():
 
     class Bed(object):
