@@ -14,7 +14,7 @@ If all you have is a file with a header and you want to get a dictionary
 for each row::
 
     >>> from toolshed import reader, header, nopen
-    >>> for d in reader('src/toolshed/tests/data/file_data.txt'):
+    >>> for d in reader('toolshed/tests/data/file_data.txt'):
     ...    print d['a'], d['b'], d['c']
     1 2 3
     11 12 13
@@ -23,7 +23,7 @@ for each row::
 works the same for gzipped, bzipped, and .xls files and for stdin (via "-")
 and for files over http/ftp::
 
-    >>> for drow in (d for d in reader('src/toolshed/tests/data/file_data.txt.gz') if int(d['a']) > 10):
+    >>> for drow in (d for d in reader('toolshed/tests/data/file_data.txt.gz') if int(d['a']) > 10):
     ...    print drow['a'], drow['b'], drow['c']
     11 12 13
     21 22 23
@@ -39,16 +39,36 @@ of callable(row). **comments welcome**.
 
 sometimes you just want the header::
 
-   >>> header('src/toolshed/tests/data/file_data.txt')
+   >>> header('toolshed/tests/data/file_data.txt')
    ['a', 'b', 'c']
 
 the `toolshed.nopen` can open a file over http, https, ftp, a gzipped file, a
 bzip file, or a subprocess with the same syntax.
 
-    >>> nopen('src/toolshed/tests/data/file_data.txt.gz')
-    <gzip open file ... >
-    >>> nopen('|ls')
-    <open file '<fdopen>'...>
+    >>> nopen('toolshed/tests/data/file_data.txt.gz') # doctest: +ELLIPSIS
+    <gzip open file ...>
+    >>> nopen('|ls') # doctest: +ELLIPSIS
+    <generator object process_iter at ...>
+
+you may need to send stdin to a proc:
+
+    # NOTE mode is None
+    >>> proc = nopen("|awk '(NR % 2 == 1)'", mode=None)
+
+    # write some stuff to STDIN
+    >>> proc.stdin.write("number\n")
+    >>> for i in range(5):
+    ...    proc.stdin.write("%i\n" % i)
+
+    # IMPORTANT! close stdin
+    >>> proc.stdin.close()
+
+    # the read stdout
+    >>> for d in reader(proc.stdout, header=True):
+    ...    print d
+    {'number': '1'}
+    {'number': '3'}
+
 
 Shedskinner
 -----------

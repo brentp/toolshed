@@ -25,7 +25,7 @@ dialect = csv.excel
 
 class ProcessException(Exception): pass
 
-def process_iter(proc, cmd):
+def process_iter(proc, cmd=""):
     """
     helper function to iterate over a process stdout
     and report error messages when done
@@ -91,10 +91,11 @@ def nopen(f, mode="rb"):
         if f.endswith(".gz"):
             return ungzipper(fh)
         return fh
+    f = op.expanduser(op.expandvars(f))
     return {"r": sys.stdin, "w": sys.stdout}[mode[0]] if f == "-" \
          else gzip.open(f, mode) if f.endswith((".gz", ".Z", ".z")) \
          else bz2.BZ2File(f, mode) if f.endswith((".bz", ".bz2", ".bzip2")) \
-         else open(op.expanduser(op.expandvars(f)), mode)
+         else open(f, mode)
 
 def ungzipper(fh, blocksize=16384):
     """
@@ -159,7 +160,6 @@ def reader(fname, header=True, sep="\t"):
         isinstance(fname, types.GeneratorType):
             line_gen = fname
     elif sep is None:
-        import re
         def _line_gen(f, sep):
             if sep is None:
                 for line in nopen(f):
