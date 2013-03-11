@@ -81,7 +81,7 @@ def nopen(f, mode="rb"):
         # using shell explicitly makes things like process substitution work:
         # http://stackoverflow.com/questions/7407667/python-subprocess-subshells-and-redirection
         p = Popen(f[1:], stdout=PIPE, stdin=PIPE, stderr=PIPE, shell=True,
-                close_fds=True, executable=os.environ.get('SHELL'))
+                close_fds=False, executable=os.environ.get('SHELL'))
         if mode and mode[0] == "r":
             return process_iter(p, f[1:])
         return p
