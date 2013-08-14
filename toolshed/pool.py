@@ -81,7 +81,15 @@ def pmap(f, iterable, n=None, dummy=False, p=None):
     # iterable via the func_star function above
 
     if p is None:
-        p = pool(n, dummy)
-    assert hasattr(p, 'imap')
+        po = pool(n, dummy)
+    else:
+        po = p
+    assert hasattr(po, 'imap')
     f = _func_star(f)
-    return p.imap(f, iterable)
+    for r in po.imap(f, iterable):
+        yield r
+
+    # explicitly clean up created pool
+    if p is None:
+        po.terminate()
+        po.close()
