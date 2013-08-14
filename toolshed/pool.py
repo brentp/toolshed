@@ -21,7 +21,7 @@ The other feature is simply to
 
 """
 import signal
-from itertools import izip, repeat
+from itertools import izip
 
 __all__ = ['pool', 'pmap']
 
@@ -76,9 +76,6 @@ def pmap(f, iterable, n=None, dummy=False, p=None):
       dummy: use dummy pool.
       p: existing pool to re-use
     """
-
-    # just create repeated func, so we can /apply/ it across the
-    # iterable via the func_star function above
 
     if p is None:
         po = pool(n, dummy)
