@@ -6,7 +6,7 @@ README = open(os.path.join(here, 'README.rst')).read()
 NEWS = open(os.path.join(here, 'NEWS.txt')).read()
 
 
-version = '0.2.9'
+version = '0.3.0'
 
 install_requires = [
     'nose',
@@ -16,7 +16,7 @@ install_requires = [
 setup(name='toolshed',
     version=version,
     description="Tools for data",
-    long_description=README + '\n\n' + NEWS,
+    long_description=README,
     classifiers=[
       # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
       'Topic :: Scientific/Engineering',

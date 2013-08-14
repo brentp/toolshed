@@ -1,5 +1,9 @@
 News
 ====
+0.3.0
+-----
+utilities for working with multiprocessing pools.
+
 0.2.9
 -----
 support for bash process substition, e.g.: reader("|cmd <(some args)")

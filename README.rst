@@ -37,11 +37,6 @@ callable will be called for each row with a single argument which is the
 list of columns in the future, it may be called as:  callable(\*row) instead
 of callable(row). **comments welcome**.
 
-sometimes you just want the header::
-
-   >>> header('toolshed/tests/data/file_data.txt')
-   ['a', 'b', 'c']
-
 the `toolshed.nopen` can open a file over http, https, ftp, a gzipped file, a
 bzip file, or a subprocess with the same syntax.
 
@@ -68,6 +63,43 @@ you may need to send stdin to a proc:
     ...    print d
     {'number': '1'}
     {'number': '3'}
+
+Pools
+-----
+
+ctrl+c on a long-running multi-processing pool is often non-responsive.
+if we use toolshed.pool(), that is fixed (using signal).
+
+this module also provides pmap, which wraps multiprocessing.Pool.map()
+to expand args, so we can do:
+
+    >>> def fn(a, b):
+    ...    return a + b
+
+    >>> list(pmap(fn, [(1, 1), (2, 3)]))
+    [2, 5]
+
+
+
+and the fn will be mapped in parallel and we didn't need a wrapper function
+for fn like:
+
+    def wrapper(args):
+        return fn(*args)
+
+as we would normally. 
+
+Note that this is like:
+
+    >>> from itertools import starmap
+    >>> list(starmap(fn, [(1, 1), (2, 3)]))
+    [2, 5]
+
+But Pool.starmap is not available until python 3.3
+
+This can cause problems in cases where your 'fn' expects
+args, instead of the exploded arguments. In the future, it may introspect fn,
+but that is not implemented for now.
 
 
 Shedskinner
