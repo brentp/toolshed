@@ -1,5 +1,6 @@
 from .files import reader, tokens, nopen, header, is_newer_b
 import sys
+from .pool import pool, pmap
 
 try:
     from optimize import shedskinner
