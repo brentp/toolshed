@@ -12,10 +12,17 @@ from operator import itemgetter
 
 def groupby(iterable, key=0, filter=None):
     """
-    wrapper to itertools.groupby that
-    1) returns a list of each group, rather than a generator
-    2) accepts integers or strings as the key and automatically
-       converts them to callables with itemgetter(key)
+    wrapper to itertools.groupby that returns a list of each group, rather
+    than a generator and accepts integers or strings as the key and
+    automatically converts them to callables with itemgetter(key)
+
+    Arguments:
+        iterable: iterable
+        key: string, int or callable that tells how to group
+
+    Returns:
+        an iterable where each item is the key and a *list* of that
+        group. (itertools.groupby returns a generator of that group).
 
     e.g. groupby(iterable, 0)
     """
