@@ -64,6 +64,12 @@ you may need to send stdin to a proc:
     {'number': '1'}
     {'number': '3'}
 
+In addition, you can skip the first lines of a file with a function like::
+
+    skipper = lambda toks: toks[0].startswith('#')
+    for d in reader('file-with-extra-header.txt', skip_while=skipper):
+        do_stuff(d)
+
 Pools
 -----
 

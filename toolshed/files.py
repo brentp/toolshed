@@ -138,12 +138,16 @@ def xls_reader(f, sheet=0):
     for irow in range(ws.nrows):
         yield map(str, ws.row_values(irow))
 
-def reader(fname, header=True, sep="\t"):
+def reader(fname, header=True, sep="\t", skip_while=None):
     r"""
     for each row in the file `fname` generate dicts if `header` is True
     or lists if `header` is False. The dict keys are drawn from the first
     line. If `header` is a list of names, those will be used as the dict
     keys.
+    skip_while is a function that returns False when it is ready to start
+    consuming. this could be something like:
+
+    skip_while = lambda toks: toks[0].startswith('#')
 
     >>> from StringIO import StringIO
     >>> get_str = lambda : StringIO("a\tb\tname\n1\t2\tfred\n11\t22\tjane")
@@ -179,6 +183,13 @@ def reader(fname, header=True, sep="\t"):
                 for line in nopen(f):
                     yield sep.split(line.rstrip("\r\n"))
             line_gen = _re_line_gen(fname, sep)
+
+    if skip_while:
+        from itertools import chain
+        l = line_gen.next()
+        while skip_while(l):
+            l = line_gen.next()
+        line_gen = chain.from_iterable(([l], line_gen))
 
     # they sent in a class or function that accepts the toks.
     if callable(header):

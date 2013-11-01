@@ -22,6 +22,19 @@ def test_split_None():
     assert toks == ['asdf', '123', 'abc'], toks
     os.unlink('tt.tmp')
 
+def test_skip_until():
+
+    with open('tta.tmp', 'w') as fh:
+        print >>fh, """#a\n#b\n#c\na\tb"""
+
+    fiter = reader('tta.tmp', header=False, sep="\t",
+            skip_while=lambda toks: toks[0].startswith("#"))
+    f = list(fiter)
+    assert len(f) == 1, f
+    assert f[0] == ["a", "b"], f
+    #os.unlink('tta.tmp')
+
+
 def test_split_regex():
     fh = open('tt.tmp', 'w')
     print >>fh, "asdf123abc"
