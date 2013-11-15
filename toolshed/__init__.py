@@ -33,6 +33,15 @@ def groupby(iterable, key=0, filter=None):
     for label, grp in igroupby(iterable, key):
         yield label, list(grp)
 
+from itertools import izip_longest
+
+def groups_of(n, iterable):
+    """
+    >>> groups_of(2, range(5))
+    """
+    args = [iter(iterable)] * n
+    for x in izip_longest(*args):
+        yield [v for v in x if v is not None]
 
 def main():
     #import argparse
