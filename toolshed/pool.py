@@ -20,8 +20,6 @@ expands as fn(**kwargs).
 The other feature is simply to
 
 """
-import signal
-from itertools import izip
 
 __all__ = ['pool', 'pmap']
 
@@ -34,8 +32,8 @@ def wrapper(func):
 IMapIterator.next = wrapper(IMapIterator.next)
 
 
-def pool_sig():
-    signal.signal(signal.SIGINT, signal.SIG_IGN)
+#def pool_sig():
+#    signal.signal(signal.SIGINT, signal.SIG_IGN)
 
 def pool(n=None, dummy=True):
     """
@@ -47,7 +45,7 @@ def pool(n=None, dummy=True):
     else:
         from multiprocessing import Pool
 
-    return Pool(n, pool_sig)
+    return Pool(n)
 
 
 class _func_star(object):
