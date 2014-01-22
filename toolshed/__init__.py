@@ -33,7 +33,10 @@ def groupby(iterable, key=0, filter=None):
     for label, grp in igroupby(iterable, key):
         yield label, list(grp)
 
-from itertools import izip_longest
+try:
+    from itertools import izip_longest
+except ImportError:
+    from itertools import zip_longest as izip_longest
 
 def groups_of(n, iterable):
     """

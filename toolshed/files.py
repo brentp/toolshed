@@ -21,6 +21,12 @@ import bz2
 from subprocess import Popen, PIPE
 import csv
 
+if sys.version_info.major < 3:
+    int_types = (int, long)
+else:
+    int_types = (int,)
+    basestring = str
+
 dialect = csv.excel
 
 class ProcessException(Exception): pass
@@ -40,11 +46,12 @@ def process_iter(proc, cmd=""):
         else:
             proc.wait()
             if proc.returncode not in (0, None):
-                print >>sys.stderr, "cmd was:", cmd
+                sys.stderr.write("cmd was:%s\n" % cmd)
                 raise ProcessException(proc.stderr.read())
             s = proc.stderr.read().strip()
             if len(s) != 0:
-                print >>sys.stderr, s
+                sys.stderr.write(s)
+                sys.stderr.write('\n')
 
 def nopen(f, mode="rb"):
     r"""
@@ -55,24 +62,24 @@ def nopen(f, mode="rb"):
     (True, True)
 
     >>> nopen(sys.argv[0])
-    <open file '...', mode 'r...>
+    <...file...>
 
     # expands user and vars ($HOME)
-    >>> nopen("~/.bashrc"), nopen("$HOME/.bashrc")
-    (<open file '...', mode 'r...>, <open file '...', mode 'r...>)
+    >>> nopen("~/.bashrc").name == nopen("$HOME/.bashrc").name
+    True
 
     # an already open file.
     >>> nopen(open(sys.argv[0]))
-    <open file '...', mode 'r...>
+    <...file...>
 
     >>> nopen(0)
-    <open file '...', mode 'r...>
+    <...file...>
 
     Or provide nicer access to Popen.stdout
     >>> files = list(nopen("|ls"))
-    >>> assert 'setup.py\n' in files, files
+    >>> assert 'setup.py\n' in files or b'setup.py\n' in files, files
     """
-    if isinstance(f, (int, long)):
+    if isinstance(f, int_types):
         return nopen(sys.argv[f], mode)
 
     if not isinstance(f, basestring):
@@ -149,16 +156,23 @@ def reader(fname, header=True, sep="\t", skip_while=None):
 
     skip_while = lambda toks: toks[0].startswith('#')
 
-    >>> from StringIO import StringIO
+    >>> import sys
+    >>> if sys.version_info.major < 3:
+    ...     from StringIO import StringIO
+    ... else:
+    ...     from io import StringIO
     >>> get_str = lambda : StringIO("a\tb\tname\n1\t2\tfred\n11\t22\tjane")
-    >>> list(reader(get_str()))
-    [{'a': '1', 'b': '2', 'name': 'fred'},
-     {'a': '11', 'b': '22', 'name': 'jane'}]
+    >>> expected = [{'a': '1', 'b': '2', 'name': 'fred'},
+    ... {'a': '11', 'b': '22', 'name': 'jane'}]
+    >>> list(reader(get_str())) == expected
+    True
 
-    >>> list(reader(get_str(), header=False))
-    [['a', 'b', 'name'], ['1', '2', 'fred'], ['11', '22', 'jane']]
+    >>> expected = [['a', 'b', 'name'], 
+    ...             ['1', '2', 'fred'], ['11', '22', 'jane']]
+    >>> list(reader(get_str(), header=False)) == expected
+    True
     """
-    if isinstance(fname, (int, long)):
+    if isinstance(fname, int_types):
         fname = sys.argv[fname]
     if not isinstance(fname, basestring) and \
         isinstance(fname, types.GeneratorType):
@@ -205,7 +219,7 @@ def reader(fname, header=True, sep="\t", skip_while=None):
         header = True
 
     if header == True:
-        header = line_gen.next()
+        header = next(line_gen)
         header[0] = header[0].lstrip("#")
 
     if header:

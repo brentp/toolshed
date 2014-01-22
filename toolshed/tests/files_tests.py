@@ -16,7 +16,7 @@ def test_tokens():
 
 def test_split_None():
     fh = open('tt.tmp', 'w')
-    print >>fh, "asdf 123\tabc"
+    fh.write("asdf 123\tabc\n")
     fh.close()
     toks = reader('tt.tmp', header=None, sep=None).next()
     assert toks == ['asdf', '123', 'abc'], toks
@@ -25,7 +25,7 @@ def test_split_None():
 def test_skip_until():
 
     with open('tta.tmp', 'w') as fh:
-        print >>fh, """#a\n#b\n#c\na\tb"""
+        fh.write("""#a\n#b\n#c\na\tb\n""")
 
     fiter = reader('tta.tmp', header=False, sep="\t",
             skip_while=lambda toks: toks[0].startswith("#"))
@@ -37,7 +37,7 @@ def test_skip_until():
 
 def test_split_regex():
     fh = open('tt.tmp', 'w')
-    print >>fh, "asdf123abc"
+    fh.write("asdf123abc\n")
     fh.close()
     toks = reader('tt.tmp', header=None, sep="\d+").next()
     assert toks == ['asdf', 'abc'], toks

@@ -5,7 +5,6 @@ from operator import itemgetter
 
 def test_group():
     data = zip([1, 1, 1, 2, 2, 2], ['a', 'a', 'b', 'c', 'd', 'f'])
-    print >>sys.stderr, data
 
 
     res = list(groupby(data, (0, 1)))
