@@ -27,9 +27,14 @@ __all__ = ['pool', 'pmap']
 from multiprocessing.pool import IMapIterator
 def wrapper(func):
     def wrap(self, timeout=None):
-        return func(self, timeout=timeout or 1e100)
+        return func(self, timeout=timeout or 1e10)
     return wrap
-IMapIterator.next = wrapper(IMapIterator.next)
+import sys
+if sys.version_info.major < 3:
+    IMapIterator.next = wrapper(IMapIterator.next)
+else:
+    IMapIterator.__next__ = wrapper(IMapIterator.__next__)
+
 
 
 #def pool_sig():
@@ -86,5 +91,8 @@ def pmap(f, iterable, n=None, dummy=False, p=None):
 
     # explicitly clean up created pool
     if p is None:
-        po.terminate()
-        po.close()
+        try:
+            po.terminate()
+            po.close()
+        except:
+            pass

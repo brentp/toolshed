@@ -123,7 +123,7 @@ def check_ordered_reader(fname):
             assert all((k in d for k in "abc"))
             d["0"] = "extra"
             d["_"] = "other"
-            assert d.keys() == ["a", "b", "c", "0", "_"]
+            assert list(d.keys()) == ["a", "b", "c", "0", "_"]
 
 def check_reader_no_header(fname):
     for l in reader(fname, header=False):

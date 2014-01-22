@@ -23,9 +23,12 @@ import csv
 
 if sys.version_info.major < 3:
     int_types = (int, long)
+    urlopen = urllib.urlopen
+    basestring = basestring
 else:
     int_types = (int,)
     basestring = str
+    urlopen = urllib.request.urlopen
 
 dialect = csv.excel
 
@@ -94,7 +97,7 @@ def nopen(f, mode="rb"):
         return p
 
     if f.startswith(("http://", "https://", "ftp://")):
-        fh = urllib.urlopen(f)
+        fh = urlopen(f)
         if f.endswith(".gz"):
             return ungzipper(fh)
         return fh
@@ -134,7 +137,7 @@ def header(fname, sep="\t"):
     just grab the header from a given file
     """
     fh = iter(nopen(fname))
-    h = tokens(fh.next(), sep)
+    h = tokens(next(fh), sep)
     h[0] = h[0].lstrip("#")
     return h
 
@@ -200,9 +203,9 @@ def reader(fname, header=True, sep="\t", skip_while=None):
 
     if skip_while:
         from itertools import chain
-        l = line_gen.next()
+        l = next(line_gen)
         while skip_while(l):
-            l = line_gen.next()
+            l = next(line_gen)
         line_gen = chain.from_iterable(([l], line_gen))
 
     # they sent in a class or function that accepts the toks.

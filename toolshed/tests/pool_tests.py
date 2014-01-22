@@ -17,8 +17,8 @@ def test_pmap():
 
     r1 = list(pmap(fn, [1, 2, 3, 4]))
 
-    r2 = map(fn, [1, 2, 3, 4])
-    assert r1 == r2, (r1)
+    r2 = list(map(fn, [1, 2, 3, 4]))
+    assert r1 == r2, (r1, r2)
 
 def fnargs(a, b):
     return a + b

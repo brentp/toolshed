@@ -1,4 +1,5 @@
-from .files import reader, tokens, nopen, header, is_newer_b
+from .files import (reader, tokens, nopen, header, is_newer_b,
+    basestring, int_types)
 import sys
 from .pool import pool, pmap
 
