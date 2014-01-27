@@ -28,7 +28,7 @@ if sys.version_info.major < 3:
 else:
     int_types = (int,)
     basestring = str
-    urlopen = urllib.request.urlopen
+    from urllib.request import urlopen
 
 dialect = csv.excel
 
@@ -39,6 +39,9 @@ def process_iter(proc, cmd=""):
     helper function to iterate over a process stdout
     and report error messages when done
     """
+    if sys.version_info.major > 2:
+        import io
+        proc.stdout = io.TextIOWrapper(proc.stdout)
     try:
         for l in proc.stdout:
             yield l
@@ -92,6 +95,12 @@ def nopen(f, mode="r"):
         # http://stackoverflow.com/questions/7407667/python-subprocess-subshells-and-redirection
         p = Popen(f[1:], stdout=PIPE, stdin=PIPE, stderr=PIPE, shell=True,
                 close_fds=False, executable=os.environ.get('SHELL'))
+        if sys.version_info.major > 2:
+            import io
+            p.stdout = io.TextIOWrapper(p.stdout)
+            p.stdin = io.TextIOWrapper(p.stdin)
+            p.stderr = io.TextIOWrapper(p.stderr)
+
         if mode and mode[0] == "r":
             return process_iter(p, f[1:])
         return p
