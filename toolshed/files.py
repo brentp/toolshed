@@ -39,9 +39,6 @@ def process_iter(proc, cmd=""):
     helper function to iterate over a process stdout
     and report error messages when done
     """
-    if sys.version_info.major > 2:
-        import io
-        proc.stdout = io.TextIOWrapper(proc.stdout)
     try:
         for l in proc.stdout:
             yield l
