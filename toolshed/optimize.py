@@ -15,7 +15,7 @@ class shedskinner(object):
             return a + b
 
 
-        print adder(6, 8)
+        print(adder(6, 8))
 
     note the decorator is called with example invocations so that
     shedskin can infer types. After the first invocation, the extension
@@ -72,23 +72,23 @@ class shedskinner(object):
         tmp = open(self._tmp(source_hash), "w")
         for mod in self.modules:
             if hasattr(mod, "__module__"):
-                print >> tmp, 'from %s import %s' % (mod.__module__,mod.__name__)
+                tmp.write('from %s import %s\n' % (mod.__module__,mod.__name__))
                 continue
             elif hasattr(mod, "__name__"):
                 mod = mod.__name__
-            print >> tmp, 'import %s' % mod
+            tmp.write('import %s\n' % mod)
 
         for other_fn in self.functions:
-            print >> tmp, self._get_function_source(other_fn)
+            tmp.write(self._get_function_source(other_fn) + '\n')
 
         # hack to get the function source without the decorator line...
         # needs to be fixed...
         if src[0] == "@":
-            print >> tmp, src.split('\n', 1)[1]
+            tmp.write(src.split('\n', 1)[1] + '\n')
         else:
-            print >> tmp, src
+            tmp.write(src + '\n')
         for i in self.invocations:
-            print >>tmp, "%s%s" % (fn.func_name, str(i))
+            tmp.write("%s%s\n" % (fn.func_name, str(i)))
         tmp.close()
 
         makefile = getgx().makefile_name = "Makefile_%s" % source_hash
@@ -112,8 +112,8 @@ class shedskinner(object):
         log.close()
         sys.stdout = old
         if ret != 0:
-            print >>sys.stderr, "error making %s" % makefile
-            print open(log.name).read()
+            sys.stderr.write("error making %s\n" % makefile)
+            print(open(log.name).read())
 
     def _get_module(self, name):
         if name.endswith(".py"):

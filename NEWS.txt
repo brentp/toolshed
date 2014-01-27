@@ -1,5 +1,9 @@
 News
 ====
+0.3.3
+-----
+python 3 compatible
+
 0.3.2
 -----
 add skip_while kwarg to reader(). takes a function that accepts a list
