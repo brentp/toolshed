@@ -53,10 +53,10 @@ def process_iter(proc, cmd=""):
                 raise ProcessException(proc.stderr.read())
             s = proc.stderr.read().strip()
             if len(s) != 0:
-                sys.stderr.write(s)
+                sys.stderr.write(str(s))
                 sys.stderr.write('\n')
 
-def nopen(f, mode="rb"):
+def nopen(f, mode="r"):
     r"""
     open a file that's gzipped or return stdin for '-'
     if f is a number, the result of nopen(sys.argv[f]) is returned.
@@ -100,11 +100,25 @@ def nopen(f, mode="rb"):
         fh = urlopen(f)
         if f.endswith(".gz"):
             return ungzipper(fh)
-        return fh
+        if sys.version_info.major < 3:
+            return fh
+        import io
+        return io.TextIOWrapper(fh)
     f = op.expanduser(op.expandvars(f))
+    if f.endswith((".gz", ".Z", ".z")):
+        fh = gzip.open(f, mode)
+        if sys.version_info.major < 3:
+            return fh
+        import io
+        return io.TextIOWrapper(fh)
+    elif f.endswith((".bz", ".bz2", ".bzip2")):
+        fh = bz2.BZ2File(f, mode)
+        if sys.version_info.major < 3:
+            return fh
+        import io
+        return io.TextIOWrapper(fh)
+
     return {"r": sys.stdin, "w": sys.stdout}[mode[0]] if f == "-" \
-         else gzip.open(f, mode) if f.endswith((".gz", ".Z", ".z")) \
-         else bz2.BZ2File(f, mode) if f.endswith((".bz", ".bz2", ".bzip2")) \
          else open(f, mode)
 
 def ungzipper(fh, blocksize=16384):

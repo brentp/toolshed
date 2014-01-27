@@ -4,6 +4,7 @@ import os.path as op
 import os
 import glob
 import time
+import sys
 
 DATA = op.join(op.dirname(__file__), "data")
 
@@ -15,11 +16,11 @@ def test_tokens():
 
 
 def test_split_None():
-    fh = open('tt.tmp', 'w')
-    fh.write("asdf 123\tabc\n")
-    fh.close()
-    toks = reader('tt.tmp', header=None, sep=None).next()
-    assert toks == ['asdf', '123', 'abc'], toks
+    with open('tt.tmp', 'w') as fh:
+        fh.write("asdf 123\tabc\n")
+        fh.flush()
+        toks = next(reader('tt.tmp', header=None, sep=None))
+        assert toks == ['asdf', '123', 'abc'], toks
     os.unlink('tt.tmp')
 
 def test_skip_until():
@@ -39,7 +40,7 @@ def test_split_regex():
     fh = open('tt.tmp', 'w')
     fh.write("asdf123abc\n")
     fh.close()
-    toks = reader('tt.tmp', header=None, sep="\d+").next()
+    toks = next(reader('tt.tmp', header=None, sep="\d+"))
     assert toks == ['asdf', 'abc'], toks
     os.unlink('tt.tmp')
 
@@ -58,7 +59,7 @@ from nose.tools import raises
 
 @raises(ProcessException)
 def test_nopen_raises():
-    nopen("|asdfasdfasdfasdfasdf").next()
+    next(nopen("|asdfasdfasdfasdfasdf"))
 
 def test_process_subst():
     assert not len([x for x in nopen("|cat <(less %s)") if x.strip()])
@@ -81,7 +82,7 @@ def test_callable_header():
 def test_reader_generator():
     """check that reader can accept a generator"""
     r = reader(op.join(DATA, "file_data.txt"), header=False)
-    header = r.next()
+    header = next(r)
     for d in reader(r, header=header):
         assert all(l in d for l in "abc")
 

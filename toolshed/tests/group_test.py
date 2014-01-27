@@ -18,7 +18,10 @@ def test_group():
     assert res1 == res2
 
 def test_groups_of():
-    iterable = xrange(5)
+    try:
+        iterable = xrange(5)
+    except:
+        iterable = range(5)
     r = list(groups_of(2, iterable))
     assert r == [[0, 1], [2, 3], [4,]], r
 
