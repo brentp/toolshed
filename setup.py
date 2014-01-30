@@ -9,7 +9,7 @@ README = open(os.path.join(here, 'README.rst')).read()
 NEWS = open(os.path.join(here, 'NEWS.txt')).read()
 
 
-version = '0.3.4'
+version = '0.3.5'
 
 install_requires = [
     'nose',
@@ -25,7 +25,9 @@ setup(name='toolshed',
       'Topic :: Scientific/Engineering',
       'Topic :: Scientific/Engineering :: Bio-Informatics',
       'Topic :: Text Processing',
-      'Topic :: Utilities'
+      'Topic :: Utilities',
+      'Programming Language :: Python :: 2',
+      'Programming Language :: Python :: 3'
     ],
     keywords='bioinformatics',
     author='Brent Pedersen',
