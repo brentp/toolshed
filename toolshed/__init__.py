@@ -11,7 +11,7 @@ except ImportError:
 from itertools import groupby as igroupby
 from operator import itemgetter
 
-__version__ = "0.3.1"
+__version__ = "0.3.6"
 
 def groupby(iterable, key=0, filter=None):
     """

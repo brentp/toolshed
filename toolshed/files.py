@@ -28,7 +28,7 @@ if sys.version_info.major < 3:
 else:
     int_types = (int,)
     basestring = str
-    urlopen = urllib.request.urlopen
+    from urllib.request import urlopen
 
 dialect = csv.excel
 
@@ -50,13 +50,9 @@ def process_iter(proc, cmd=""):
             proc.wait()
             if proc.returncode not in (0, None):
                 sys.stderr.write("cmd was:%s\n" % cmd)
-                raise ProcessException(proc.stderr.read())
-            s = proc.stderr.read().strip()
-            if len(s) != 0:
-                sys.stderr.write(s)
-                sys.stderr.write('\n')
+                raise ProcessException(cmd)
 
-def nopen(f, mode="rb"):
+def nopen(f, mode="r"):
     r"""
     open a file that's gzipped or return stdin for '-'
     if f is a number, the result of nopen(sys.argv[f]) is returned.
@@ -90,8 +86,18 @@ def nopen(f, mode="rb"):
     if f.startswith("|"):
         # using shell explicitly makes things like process substitution work:
         # http://stackoverflow.com/questions/7407667/python-subprocess-subshells-and-redirection
-        p = Popen(f[1:], stdout=PIPE, stdin=PIPE, stderr=PIPE, shell=True,
-                close_fds=False, executable=os.environ.get('SHELL'))
+        # use sys.stderr so we dont have to worry about checking it...
+        p = Popen(f[1:], stdout=PIPE, stdin=PIPE,
+                  stderr=sys.stderr if mode == "r" else PIPE,
+                  shell=True, bufsize=-1, # use system default for buffering
+                  close_fds=False, executable=os.environ.get('SHELL'))
+        if sys.version_info.major > 2:
+            import io
+            p.stdout = io.TextIOWrapper(p.stdout)
+            p.stdin = io.TextIOWrapper(p.stdin)
+            if mode != "r":
+                p.stderr = io.TextIOWrapper(p.stderr)
+
         if mode and mode[0] == "r":
             return process_iter(p, f[1:])
         return p
@@ -100,11 +106,25 @@ def nopen(f, mode="rb"):
         fh = urlopen(f)
         if f.endswith(".gz"):
             return ungzipper(fh)
-        return fh
+        if sys.version_info.major < 3:
+            return fh
+        import io
+        return io.TextIOWrapper(fh)
     f = op.expanduser(op.expandvars(f))
+    if f.endswith((".gz", ".Z", ".z")):
+        fh = gzip.open(f, mode)
+        if sys.version_info.major < 3:
+            return fh
+        import io
+        return io.TextIOWrapper(fh)
+    elif f.endswith((".bz", ".bz2", ".bzip2")):
+        fh = bz2.BZ2File(f, mode)
+        if sys.version_info.major < 3:
+            return fh
+        import io
+        return io.TextIOWrapper(fh)
+
     return {"r": sys.stdin, "w": sys.stdout}[mode[0]] if f == "-" \
-         else gzip.open(f, mode) if f.endswith((".gz", ".Z", ".z")) \
-         else bz2.BZ2File(f, mode) if f.endswith((".bz", ".bz2", ".bzip2")) \
          else open(f, mode)
 
 def ungzipper(fh, blocksize=16384):

@@ -1,4 +1,4 @@
-from toolshed import groupby
+from toolshed import groupby, groups_of
 import os.path as op
 import sys
 from operator import itemgetter
@@ -17,5 +17,11 @@ def test_group():
     res2 = list(groupby(data, itemgetter(0)))
     assert res1 == res2
 
-
+def test_groups_of():
+    try:
+        iterable = xrange(5)
+    except:
+        iterable = range(5)
+    r = list(groups_of(2, iterable))
+    assert r == [[0, 1], [2, 3], [4,]], r
 

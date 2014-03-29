@@ -1,5 +1,15 @@
 News
 ====
+0.3.5
+-----
+when using nopen/reader as subprocess wrapper, send stderr as
+it appears to sys.stderr. (previously waited til process was done)
+
+
+0.3.3
+-----
+python 3 compatible
+
 0.3.2
 -----
 add skip_while kwarg to reader(). takes a function that accepts a list

@@ -1,3 +1,4 @@
+"""
 def adder(a, b):
     return a + b
 
@@ -30,3 +31,4 @@ try:
 
 except ImportError:
     pass
+"""

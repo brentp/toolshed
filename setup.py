@@ -16,7 +16,7 @@ def get_version():
 
     with open(os.path.join("toolshed", "__init__.py"), "r") as init_file:
         module = ast.parse(init_file.read())
-    
+
     version = (ast.literal_eval(node.value) for node in ast.walk(module)
                if isinstance(node, ast.Assign)
                and node.targets[0].id == "__version__")
@@ -39,7 +39,9 @@ setup(name='toolshed',
       'Topic :: Scientific/Engineering',
       'Topic :: Scientific/Engineering :: Bio-Informatics',
       'Topic :: Text Processing',
-      'Topic :: Utilities'
+      'Topic :: Utilities',
+      'Programming Language :: Python :: 2',
+      'Programming Language :: Python :: 3'
     ],
     keywords='bioinformatics',
     author='Brent Pedersen',
