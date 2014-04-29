@@ -4,3 +4,6 @@ python:
   - "2.7"
   - "3.3"
 script: python setup.py test
+
+install:
+  - pip install -e .
