@@ -23,14 +23,14 @@ The other feature is simply to
 
 __all__ = ['pool', 'pmap']
 
-# from aljunberg:  https://gist.github.com/aljungberg/626518 
+# from aljunberg:  https://gist.github.com/aljungberg/626518
 from multiprocessing.pool import IMapIterator
 def wrapper(func):
     def wrap(self, timeout=None):
         return func(self, timeout=timeout or 1e10)
     return wrap
 import sys
-if sys.version_info.major < 3:
+if sys.version_info[0] < 3:
     IMapIterator.next = wrapper(IMapIterator.next)
 else:
     IMapIterator.__next__ = wrapper(IMapIterator.__next__)
