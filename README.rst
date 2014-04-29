@@ -1,8 +1,11 @@
-Toolshed: Less Boiler-Plate
+Toolshed: Less Boiler-Plate |build|_
 ===========================
 
+.. |build| image:: https://travis-ci.org/brentp/toolshed.svg
+.. _build: https://travis-ci.org/brentp/toolshed
+
 This is a collection of well-tested, simple modules and functions
-that I use frequently
+that I use frequently.
 
 Files
 -----
@@ -93,7 +96,7 @@ for fn like:
     def wrapper(args):
         return fn(*args)
 
-as we would normally. 
+as we would normally.
 
 Note that this is like:
 
@@ -124,7 +127,7 @@ function. Use looks like::
 
 Where here, we have decorated the adder function to make it a compiled, fast
 version that accepts and returns integers. The (2, 12) are example arguments
-to the function so that shedskin can infer types. 
+to the function so that shedskin can infer types.
 The keyword arguments are sent to the compiler (see:
 https://gist.github.com/1036972) for more examples.
 
