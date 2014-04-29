@@ -1,8 +1,14 @@
+import os
+import sys
+
+# HACK to prevent 'atexit' error in 'nose.collector'. See issues for
+# details https://github.com/travis-ci/travis-ci/issues/1778
+import multiprocessing
+
 import ez_setup
 ez_setup.use_setuptools()
 
 from setuptools import setup, find_packages
-import os
 
 here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.rst')).read()
@@ -25,9 +31,13 @@ def get_version():
     except StopIteration:
         raise ValueError("version could not be located")
 
-install_requires = [
-    'nose',
-]
+
+tests_require = ["nose"]
+
+if sys.version_info[:2] < (2, 7):
+    install_requires = ["argparse", "ordereddict"]
+else:
+    install_requires =   []
 
 
 setup(name='toolshed',
@@ -50,11 +60,9 @@ setup(name='toolshed',
     license='BSD (2-clause)',
     packages=['toolshed'],
     include_package_data=True,
-    test_suite='nose.collector',
     zip_safe=False,
+    test_suite='nose.collector',
+    tests_require=tests_require,
     install_requires=install_requires,
-    entry_points={
-        'console_scripts':
-            ['toolshed=toolshed:main']
-    }
+    entry_points={'console_scripts': ['toolshed=toolshed:main']}
 )

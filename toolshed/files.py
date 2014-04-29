@@ -21,7 +21,7 @@ import bz2
 from subprocess import Popen, PIPE
 import csv
 
-if sys.version_info.major < 3:
+if sys.version_info[0] < 3:
     int_types = (int, long)
     urlopen = urllib.urlopen
     basestring = basestring
@@ -91,7 +91,7 @@ def nopen(f, mode="r"):
                   stderr=sys.stderr if mode == "r" else PIPE,
                   shell=True, bufsize=-1, # use system default for buffering
                   close_fds=False, executable=os.environ.get('SHELL'))
-        if sys.version_info.major > 2:
+        if sys.version_info[0] > 2:
             import io
             p.stdout = io.TextIOWrapper(p.stdout)
             p.stdin = io.TextIOWrapper(p.stdin)
@@ -106,20 +106,20 @@ def nopen(f, mode="r"):
         fh = urlopen(f)
         if f.endswith(".gz"):
             return ungzipper(fh)
-        if sys.version_info.major < 3:
+        if sys.version_info[0] < 3:
             return fh
         import io
         return io.TextIOWrapper(fh)
     f = op.expanduser(op.expandvars(f))
     if f.endswith((".gz", ".Z", ".z")):
         fh = gzip.open(f, mode)
-        if sys.version_info.major < 3:
+        if sys.version_info[0] < 3:
             return fh
         import io
         return io.TextIOWrapper(fh)
     elif f.endswith((".bz", ".bz2", ".bzip2")):
         fh = bz2.BZ2File(f, mode)
-        if sys.version_info.major < 3:
+        if sys.version_info[0] < 3:
             return fh
         import io
         return io.TextIOWrapper(fh)
@@ -180,7 +180,7 @@ def reader(fname, header=True, sep="\t", skip_while=None):
     skip_while = lambda toks: toks[0].startswith('#')
 
     >>> import sys
-    >>> if sys.version_info.major < 3:
+    >>> if sys.version_info[0] < 3:
     ...     from StringIO import StringIO
     ... else:
     ...     from io import StringIO
@@ -190,7 +190,7 @@ def reader(fname, header=True, sep="\t", skip_while=None):
     >>> list(reader(get_str())) == expected
     True
 
-    >>> expected = [['a', 'b', 'name'], 
+    >>> expected = [['a', 'b', 'name'],
     ...             ['1', '2', 'fred'], ['11', '22', 'jane']]
     >>> list(reader(get_str(), header=False)) == expected
     True
@@ -238,7 +238,10 @@ def reader(fname, header=True, sep="\t", skip_while=None):
     a_dict = dict
     # if header is 'ordered', then use an ordered dictionary.
     if header == "ordered":
-        from collections import OrderedDict as a_dict
+        try:
+            from collections import OrderedDict as a_dict
+        except ImportError:
+            from ordereddict import OrderedDict as a_dict
         header = True
 
     if header == True:
