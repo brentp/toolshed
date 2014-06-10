@@ -168,7 +168,8 @@ def xls_reader(f, sheet=0):
     for irow in range(ws.nrows):
         yield map(str, ws.row_values(irow))
 
-def reader(fname, header=True, sep="\t", skip_while=None):
+def reader(fname, header=True, sep="\t", skip_while=None,
+        quotechar='"'):
     r"""
     for each row in the file `fname` generate dicts if `header` is True
     or lists if `header` is False. The dict keys are drawn from the first
@@ -212,6 +213,7 @@ def reader(fname, header=True, sep="\t", skip_while=None):
         try:
             dialect = csv.excel
             dialect.delimiter = sep
+            dialect.quotechar = quotechar
             line_gen = csv.reader(nopen(fname), dialect=dialect)
         except TypeError: # sep is None or a regex.
             import re
