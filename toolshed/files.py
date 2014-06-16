@@ -213,7 +213,10 @@ def reader(fname, header=True, sep="\t", skip_while=None,
         try:
             dialect = csv.excel
             dialect.delimiter = sep
-            dialect.quotechar = quotechar
+            if quotechar is None:
+                dialect.quoting = csv.QUOTE_NONE
+            else:
+                dialect.quotechar = quotechar
             line_gen = csv.reader(nopen(fname), dialect=dialect)
         except TypeError: # sep is None or a regex.
             import re
