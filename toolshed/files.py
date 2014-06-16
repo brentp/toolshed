@@ -210,12 +210,15 @@ def reader(fname, header=True, sep="\t", skip_while=None,
     elif isinstance(fname, basestring) and fname.endswith((".xls")):
         line_gen = xls_reader(fname)
     else:
-        try:
+        # simple separator, e.g. comma or "\t, "\s", etc.
+        if len(sep) == 1 or (len(sep) == 2 and sep[0] == '\\'):
             dialect = csv.excel
             dialect.delimiter = sep
             dialect.quotechar = quotechar
+            if not quotechar:
+                dialect.quoting = csv.QUOTE_NONE
             line_gen = csv.reader(nopen(fname), dialect=dialect)
-        except TypeError: # sep is None or a regex.
+        else: # sep is a regex.
             import re
             sep = re.compile(sep)
             def _re_line_gen(f, sep):
