@@ -11,11 +11,11 @@ ez_setup.use_setuptools()
 from setuptools import setup, find_packages
 
 here = os.path.abspath(os.path.dirname(__file__))
-with open(os.path.join(here, 'README.rst')) as file_readme:
-    README = file_readme.read()
+with open(os.path.join(here, 'README.rst')) as readme_file:
+    README = readme_file.read()
 
-with open(os.path.join(here, 'NEWS.txt')) as file_news:
-    NEWS = file_news.read()
+with open(os.path.join(here, 'NEWS.txt')) as news_file:
+    NEWS = news_file.read()
 
 
 # from mpld3
