@@ -2,6 +2,7 @@ from .files import (reader, tokens, nopen, header, is_newer_b,
     basestring, int_types)
 import sys
 from .pool import pool, pmap
+from .fmt import fmt2header
 
 try:
     from optimize import shedskinner
@@ -11,7 +12,7 @@ except ImportError:
 from itertools import groupby as igroupby
 from operator import itemgetter
 
-__version__ = "0.3.9"
+__version__ = "0.4.0"
 
 def groupby(iterable, key=0, filter=None):
     """
