@@ -49,6 +49,9 @@ def pool(n=None, dummy=True):
         from multiprocessing.dummy import Pool
     else:
         from multiprocessing import Pool
+    if n is None:
+        import multiprocessing
+        n = multiprocessing.cpu_count() - 1
 
     return Pool(n)
 
