@@ -23,6 +23,7 @@ The other feature is simply to
 
 __all__ = ['pool', 'pmap']
 
+import itertools as it
 # from aljunberg:  https://gist.github.com/aljungberg/626518
 from multiprocessing.pool import IMapIterator
 def wrapper(func):
@@ -82,6 +83,13 @@ def pmap(f, iterable, n=None, dummy=False, p=None):
       dummy: use dummy pool.
       p: existing pool to re-use
     """
+
+    # make it easier to debug.
+    if n == 1:
+        for r in it.starmap(f, iterable):
+            yield r
+        raise StopIteration
+
 
     if p is None:
         po = pool(n, dummy)
