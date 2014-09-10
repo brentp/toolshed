@@ -41,7 +41,7 @@ else:
 #def pool_sig():
 #    signal.signal(signal.SIGINT, signal.SIG_IGN)
 
-def pool(n=None, dummy=True):
+def pool(n=None, dummy=False):
     """
     create a multiprocessing pool that responds to interrupts.
     """
@@ -106,7 +106,7 @@ def pmap(f, iterable, n=None, dummy=False, p=None):
     finally:
         if p is None:
             try:
-                po.terminate()
                 po.close()
+                po.join()
             except:
                 pass
