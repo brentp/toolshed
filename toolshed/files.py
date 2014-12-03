@@ -25,7 +25,6 @@ from collections import namedtuple
 if sys.version_info[0] < 3:
     int_types = (int, long)
     urlopen = urllib.urlopen
-    basestring = basestring
 else:
     int_types = (int,)
     basestring = str
@@ -260,7 +259,7 @@ def reader(fname, header=True, sep="\t", skip_while=None,
             from ordereddict import OrderedDict as a_dict
         header = True
 
-    if header == True:
+    if header is True:
         header = next(line_gen)
         header[0] = header[0].lstrip("#")
 

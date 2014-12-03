@@ -1,8 +1,10 @@
-from .files import (reader, tokens, nopen, header, is_newer_b,
-    basestring, int_types)
+from .files import (reader, tokens, nopen, header, is_newer_b, int_types)
 import sys
 from .pool import pool, pmap
 from .fmt import fmt2header
+
+if sys.version_info[0] == 3:
+    basestring = str
 
 from itertools import groupby as igroupby
 from operator import itemgetter
