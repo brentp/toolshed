@@ -4,11 +4,6 @@ import sys
 from .pool import pool, pmap
 from .fmt import fmt2header
 
-try:
-    from optimize import shedskinner
-except ImportError:
-    pass
-
 from itertools import groupby as igroupby
 from operator import itemgetter
 
