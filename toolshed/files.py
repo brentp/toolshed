@@ -241,7 +241,7 @@ def reader(fname, header=True, sep="\t", skip_while=None,
     if header is namedtuple:
         nt = namedtuple('namedtuple', next(line_gen))
         for toks in line_gen:
-            yield nt(*toks)
+            yield nt._make(toks)
         raise StopIteration
 
     # they sent in a class or function that accepts the toks.
