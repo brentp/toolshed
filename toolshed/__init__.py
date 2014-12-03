@@ -7,7 +7,7 @@ from .fmt import fmt2header
 from itertools import groupby as igroupby
 from operator import itemgetter
 
-__version__ = "0.4.2"
+__version__ = "0.4.4"
 
 def groupby(iterable, key=0, filter=None):
     """

@@ -23,6 +23,15 @@ for each row::
     11 12 13
     21 22 23
 
+Or as a namedtuple::
+
+    >>> from collections import namedtuple
+    >>> for d in reader('toolshed/tests/data/file_data.txt', header=namedtuple):
+    ...    print d.a, d.b, d.c
+    1 2 3
+    11 12 13
+    21 22 23
+
 works the same for gzipped, bzipped, and .xls files and for stdin (via "-")
 and for files over http/ftp::
 
@@ -80,11 +89,12 @@ ctrl+c on a long-running multi-processing pool is often non-responsive.
 if we use toolshed.pool(), that is fixed (using signal).
 
 this module also provides pmap, which wraps multiprocessing.Pool.map()
-to expand args, so we can do:
+to expand args, so we can do::
 
-    >>> def fn(a, b):
-    ...    return a + b
 
+    >>> def fn(a, b):  return a + b
+
+    >>> from toolshed import pmap
     >>> list(pmap(fn, [(1, 1), (2, 3)]))
     [2, 5]
 
@@ -109,27 +119,6 @@ But Pool.starmap is not available until python 3.3
 This can cause problems in cases where your 'fn' expects
 args, instead of the exploded arguments. In the future, it may introspect fn,
 but that is not implemented for now.
-
-
-Shedskinner
------------
-
-Shedskin is a program that takes python scripts, infers the types based
-on example input and generates fast C++ code that compiles to a python
-extension module. Shedskinner is a decorator that automates this for a single
-function. Use looks like::
-
-    from toolshed import shedskinner
-
-    @shedskinner((2, 12), long=True, fast_random=True):
-    def adder(a, b):
-        return a + b
-
-Where here, we have decorated the adder function to make it a compiled, fast
-version that accepts and returns integers. The (2, 12) are example arguments
-to the function so that shedskin can infer types.
-The keyword arguments are sent to the compiler (see:
-https://gist.github.com/1036972) for more examples.
 
 Links
 -----
