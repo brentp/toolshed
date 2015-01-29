@@ -1,18 +1,15 @@
-from .files import (reader, tokens, nopen, header, is_newer_b,
-    basestring, int_types)
+from .files import (reader, tokens, nopen, header, is_newer_b, int_types)
 import sys
 from .pool import pool, pmap
 from .fmt import fmt2header
 
-try:
-    from optimize import shedskinner
-except ImportError:
-    pass
+if sys.version_info[0] == 3:
+    basestring = str
 
 from itertools import groupby as igroupby
 from operator import itemgetter
 
-__version__ = "0.4.3"
+__version__ = "0.4.4"
 
 def groupby(iterable, key=0, filter=None):
     """

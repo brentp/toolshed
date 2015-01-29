@@ -65,6 +65,13 @@ def test_process_subst():
     assert not len([x for x in nopen("|cat <(less %s)") if x.strip()])
     assert len([x for x in nopen("|cat <(less %s)" % __file__.rstrip('c')) if x.strip()])
 
+def test_namedtuple_header():
+    from collections import namedtuple
+    for d in reader(op.join(DATA, "file_data.txt"), header=namedtuple):
+        assert hasattr(d, "a"), d
+        assert hasattr(d, "b")
+        assert hasattr(d, "c")
+
 def test_callable_header():
 
     class Bed(object):

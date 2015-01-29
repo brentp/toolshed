@@ -21,11 +21,11 @@ import gzip
 import bz2
 from subprocess import Popen, PIPE
 import csv
+from collections import namedtuple
 
 if sys.version_info[0] < 3:
     int_types = (int, long)
     urlopen = urllib.urlopen
-    basestring = basestring
 else:
     int_types = (int,)
     basestring = str
@@ -179,10 +179,14 @@ def xls_reader(f, sheet=0):
 def reader(fname, header=True, sep="\t", skip_while=None,
         quotechar='"'):
     r"""
-    for each row in the file `fname` generate dicts if `header` is True
+    for each row in the file `fname` generate dicts If `header` is True
     or lists if `header` is False. The dict keys are drawn from the first
-    line. If `header` is a list of names, those will be used as the dict
-    keys.
+    line.
+    If `header` is a list of names, those will be used as the dict keys.
+    If `header` is 'ordered', the function will yield ordered dicts.
+    If `header` is a callable, it will be called for each row.
+    If `header` is collections.namedtuple, a namedtuple object will be yielded
+    for each row using the first row as the names.
     skip_while is a function that returns False when it is ready to start
     consuming. this could be something like:
 
@@ -241,8 +245,14 @@ def reader(fname, header=True, sep="\t", skip_while=None,
             l = next(line_gen)
         line_gen = chain.from_iterable(([l], line_gen))
 
+    if header is namedtuple:
+        nt = namedtuple('namedtuple', next(line_gen))
+        for toks in line_gen:
+            yield nt._make(toks)
+        raise StopIteration
+
     # they sent in a class or function that accepts the toks.
-    if callable(header):
+    elif callable(header):
         for toks in line_gen:
             yield header(toks)
 
@@ -257,7 +267,7 @@ def reader(fname, header=True, sep="\t", skip_while=None,
             from ordereddict import OrderedDict as a_dict
         header = True
 
-    if header == True:
+    if header is True:
         header = next(line_gen)
         header[0] = header[0].lstrip("#")
 
