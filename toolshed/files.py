@@ -4,6 +4,7 @@
 import sys
 import os
 import os.path as op
+import signal
 try:
     from itertools import izip
 except ImportError:
@@ -34,6 +35,11 @@ dialect = csv.excel
 
 class ProcessException(Exception): pass
 
+# handle a SIGPIPE error in Popen (happens when calling a command
+# that has pipes.
+def prefunc():
+    signal.signal(signal.SIGPIPE, lambda : None)
+
 def process_iter(proc, cmd=""):
     """
     helper function to iterate over a process stdout
@@ -48,8 +54,9 @@ def process_iter(proc, cmd=""):
             return
         else:
             proc.wait()
-            if proc.returncode not in (0, None):
+            if proc.returncode not in (0, None, signal.SIGPIPE, signal.SIGPIPE + 128):
                 sys.stderr.write("cmd was:%s\n" % cmd)
+                sys.stderr.write("return code was:%s\n" % proc.returncode)
                 raise ProcessException(cmd)
 
 def nopen(f, mode="r"):
@@ -90,6 +97,7 @@ def nopen(f, mode="r"):
         p = Popen(f[1:], stdout=PIPE, stdin=PIPE,
                   stderr=sys.stderr if mode == "r" else PIPE,
                   shell=True, bufsize=-1, # use system default for buffering
+                  preexec_fn=prefunc,
                   close_fds=False, executable=os.environ.get('SHELL'))
         if sys.version_info[0] > 2:
             import io

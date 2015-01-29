@@ -1,5 +1,8 @@
 News
 ====
+0.4.3
+-----
+handle (ignore) SIGPIPE errors.
 
 0.3.7
 -----
