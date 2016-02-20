@@ -38,7 +38,8 @@ class ProcessException(Exception): pass
 # handle a SIGPIPE error in Popen (happens when calling a command
 # that has pipes.
 def prefunc():
-    signal.signal(signal.SIGPIPE, lambda : None)
+    signal.signal(signal.SIGPIPE, signal.SIG_DFL)
+    #signal.signal(signal.SIGPIPE, lambda : None)
 
 def process_iter(proc, cmd=""):
     """
@@ -246,7 +247,9 @@ def reader(fname, header=True, sep="\t", skip_while=None,
         line_gen = chain.from_iterable(([l], line_gen))
 
     if header is namedtuple:
-        nt = namedtuple('namedtuple', next(line_gen))
+        header = next(line_gen)
+        header[0] = header[0].lstrip("#")
+        nt = namedtuple('namedtuple', header)
         for toks in line_gen:
             yield nt._make(toks)
         raise StopIteration
