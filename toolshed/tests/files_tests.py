@@ -59,7 +59,10 @@ from nose.tools import raises
 
 @raises(ProcessException)
 def test_nopen_raises():
-    next(nopen("|asdfasdfasdfasdfasdf"))
+    try:
+        next(nopen("|asdfasdfasdfasdfasdf"))
+    except StopIteration:
+        raise ProcessException
 
 def test_process_subst():
     assert not len([x for x in nopen("|cat <(less %s)") if x.strip()])
