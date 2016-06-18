@@ -28,7 +28,7 @@ import itertools as it
 from multiprocessing.pool import IMapIterator
 def wrapper(func):
     def wrap(self, timeout=None):
-        return func(self, timeout=timeout or 1e10)
+        return func(self, timeout=timeout or 1e8)
     return wrap
 import sys
 if sys.version_info[0] < 3:
