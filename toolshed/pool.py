@@ -40,7 +40,10 @@ else:
 # allow instance methods to be pickled.
 # from Steven Bethard
 # http://stackoverflow.com/questions/1816958/cant-pickle-type-instancemethod-when-using-pythons-multiprocessing-pool-ma
-from copy_reg import pickle
+try:
+    from copy_reg import pickle
+except ImportError:
+    from copyreg import pickle
 from types import MethodType
 
 def _pickle_method(method):
