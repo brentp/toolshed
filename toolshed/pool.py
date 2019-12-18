@@ -24,11 +24,12 @@ The other feature is simply to
 __all__ = ['pool', 'pmap']
 
 import itertools as it
+import threading
 # from aljunberg:  https://gist.github.com/aljungberg/626518
 from multiprocessing.pool import IMapIterator
 def wrapper(func):
-    def wrap(self, timeout=None):
-        return func(self, timeout=timeout or 1e8)
+    def wrap(self, timeout=threading.TIMEOUT_MAX):
+        return func(self, timeout=timeout)
     return wrap
 import sys
 if sys.version_info[0] < 3:
