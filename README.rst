@@ -1,5 +1,5 @@
 Toolshed: Less Boiler-Plate |build|_
-===========================
+====================================
 
 .. |build| image:: https://travis-ci.org/brentp/toolshed.svg
 .. _build: https://travis-ci.org/brentp/toolshed
@@ -50,14 +50,14 @@ list of columns in the future, it may be called as:  callable(\*row) instead
 of callable(row). **comments welcome**.
 
 the `toolshed.nopen` can open a file over http, https, ftp, a gzipped file, a
-bzip file, or a subprocess with the same syntax.
+bzip file, or a subprocess with the same syntax::
 
     >>> nopen('toolshed/tests/data/file_data.txt.gz') # doctest: +ELLIPSIS
     <gzip open file ...>
     >>> nopen('|ls') # doctest: +ELLIPSIS
     <generator object process_iter at ...>
 
-you may need to send stdin to a proc:
+    #you may need to send stdin to a proc:
 
     # NOTE mode is None
     >>> proc = nopen("|awk '(NR % 2 == 1)'", mode=None)
@@ -76,7 +76,7 @@ you may need to send stdin to a proc:
     {'number': '1'}
     {'number': '3'}
 
-In addition, you can skip the first lines of a file with a function like::
+    #In addition, you can skip the first lines of a file with a function like::
 
     skipper = lambda toks: toks[0].startswith('#')
     for d in reader('file-with-extra-header.txt', skip_while=skipper):
@@ -101,14 +101,14 @@ to expand args, so we can do::
 
 
 and the fn will be mapped in parallel and we didn't need a wrapper function
-for fn like:
+for fn like::
 
     def wrapper(args):
         return fn(*args)
 
 as we would normally.
 
-Note that this is like:
+Note that this is like::
 
     >>> from itertools import starmap
     >>> list(starmap(fn, [(1, 1), (2, 3)]))

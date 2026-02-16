@@ -9,7 +9,7 @@ def fmt2header(fmt):
     >>> fmt.format(chrom='chr1', start=1234, end=3456, pvalue=0.01232432)
     'chr1  1234       3456 0.01232'
     """
-    return re.sub("{|(?:\:.+?)?}", "", fmt)
+    return re.sub(r"{|(?::.+?)?}", "", fmt)
 
 if __name__ == "__main__":
     import doctest

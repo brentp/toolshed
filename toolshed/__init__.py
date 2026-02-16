@@ -9,7 +9,7 @@ if sys.version_info[0] == 3:
 from itertools import groupby as igroupby
 from operator import itemgetter
 
-__version__ = "0.4.7"
+__version__ = "0.4.8"
 
 def groupby(iterable, key=0, filter=None):
     """
